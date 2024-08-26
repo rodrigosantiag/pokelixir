@@ -61,6 +61,7 @@ defmodule Pokelixir do
     end
   end
 
+  @spec async_all() :: [Pokemon.t()]
   def async_all() do
     case count() do
       {:error, _reason} ->
@@ -80,6 +81,7 @@ defmodule Pokelixir do
     end
   end
 
+  @spec count() :: integer() | {:error, String.t()}
   defp count() do
     build = Finch.build(:get, "https://pokeapi.co/api/v2/pokemon")
 
@@ -93,6 +95,7 @@ defmodule Pokelixir do
     end
   end
 
+  @spec get_stats(map(), String.t()) :: integer() | nil
   defp get_stats(decoded_pokemon, stat) do
     decoded_pokemon["stats"]
     |> Enum.find_value(fn current_stat ->
