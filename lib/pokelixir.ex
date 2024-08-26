@@ -14,19 +14,20 @@ defmodule Pokelixir do
       {:ok, %Finch.Response{status: 200, body: body}} ->
         decoded_pokemon = Jason.decode!(body)
 
-        {:ok, %Pokemon{
-          id: decoded_pokemon["id"],
-          name: decoded_pokemon["name"],
-          hp: get_stats(decoded_pokemon, "hp"),
-          attack: get_stats(decoded_pokemon, "attack"),
-          defense: get_stats(decoded_pokemon, "defense"),
-          special_attack: get_stats(decoded_pokemon, "special-attack"),
-          special_defense: get_stats(decoded_pokemon, "special-defense"),
-          speed: get_stats(decoded_pokemon, "speed"),
-          weight: decoded_pokemon["weight"],
-          height: decoded_pokemon["height"],
-          types: Enum.map(decoded_pokemon["types"], fn type -> type["type"]["name"] end)
-        }}
+        {:ok,
+         %Pokemon{
+           id: decoded_pokemon["id"],
+           name: decoded_pokemon["name"],
+           hp: get_stats(decoded_pokemon, "hp"),
+           attack: get_stats(decoded_pokemon, "attack"),
+           defense: get_stats(decoded_pokemon, "defense"),
+           special_attack: get_stats(decoded_pokemon, "special-attack"),
+           special_defense: get_stats(decoded_pokemon, "special-defense"),
+           speed: get_stats(decoded_pokemon, "speed"),
+           weight: decoded_pokemon["weight"],
+           height: decoded_pokemon["height"],
+           types: Enum.map(decoded_pokemon["types"], fn type -> type["type"]["name"] end)
+         }}
 
       {:ok, _response} ->
         {:ok, "Pokemon not found"}
@@ -76,10 +77,10 @@ defmodule Pokelixir do
         total_pages = div(count, limit)
 
         Task.async_stream(0..total_pages, fn page ->
-          all(limit, offset + (page * limit))
+          all(limit, offset + page * limit)
         end)
         |> Enum.map_reduce([], fn {:ok, pokemons}, acc -> {pokemons, acc ++ pokemons} end)
-      |> elem(1)
+        |> elem(1)
     end
   end
 

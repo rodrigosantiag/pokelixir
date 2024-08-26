@@ -22,6 +22,7 @@ defmodule Pokelixir.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:credo, "~> 1.7", only: [:dev, :test]},
       {:finch, "~> 0.18.0"},
       {:jason, "~> 1.4"},
       {:plug_cowboy, "~> 2.5"}

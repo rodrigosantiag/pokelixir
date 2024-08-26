@@ -16,7 +16,7 @@ defmodule Pokelixir.Router do
   get "/async-all" do
     conn
     |> put_resp_content_type("application/json")
-    |> send_resp(200, Jason.encode!(Pokelixir.async_all))
+    |> send_resp(200, Jason.encode!(Pokelixir.async_all()))
   end
 
   get "/pokemon/:name_or_id" do
