@@ -75,7 +75,6 @@ defmodule Pokelixir do
         Task.async_stream(0..total_pages, fn page ->
           all(limit, offset + (page * limit))
         end)
-        |> IO.inspect(label: "All done!")
         |> Enum.map_reduce([], fn {:ok, pokemons}, acc -> {pokemons, acc ++ pokemons} end)
       |> elem(1)
     end
