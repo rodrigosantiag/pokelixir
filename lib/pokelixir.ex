@@ -30,7 +30,7 @@ defmodule Pokelixir do
         }}
 
       {:ok, _response} ->
-        {:error, "Pokemon not found"}
+        {:ok, "Pokemon not found"}
 
       {:error, _reason} ->
         {:error, "Pokemon not found"}

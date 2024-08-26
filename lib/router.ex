@@ -23,15 +23,20 @@ defmodule Pokelixir.Router do
     name_or_id = conn.params["name_or_id"]
 
     case Pokelixir.get(name_or_id) do
-      {:ok, pokemon} ->
+      {:ok, %Pokemon{} = pokemon} ->
         conn
         |> put_resp_content_type("application/json")
         |> send_resp(200, Jason.encode!(pokemon))
 
-      {:error, _reason} ->
+      {:ok, "Pokemon not found"} ->
         conn
         |> put_resp_content_type("application/json")
-        |> send_resp(404, "Not Found")
+        |> send_resp(200, "Pokemon not found")
+
+      {:error, reason} ->
+        conn
+        |> put_resp_content_type("application/json")
+        |> send_resp(404, reason)
     end
   end
 
