@@ -23,7 +23,8 @@ defmodule Pokelixir.MixProject do
   defp deps do
     [
       {:finch, "~> 0.18.0"},
-      {:jason, "~> 1.4"}
+      {:jason, "~> 1.4"},
+      {:plug_cowboy, "~> 2.5"}
     ]
   end
 end

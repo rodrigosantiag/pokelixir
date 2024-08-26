@@ -15,7 +15,7 @@ defmodule Pokelixir do
       {:ok, %Finch.Response{status: 200, body: body}} ->
         decoded_pokemon = Jason.decode!(body)
 
-        %Pokemon{
+        {:ok, %Pokemon{
           id: decoded_pokemon["id"],
           name: decoded_pokemon["name"],
           hp: get_stats(decoded_pokemon, "hp"),
@@ -27,7 +27,7 @@ defmodule Pokelixir do
           weight: decoded_pokemon["weight"],
           height: decoded_pokemon["height"],
           types: Enum.map(decoded_pokemon["types"], fn type -> type["type"]["name"] end)
-        }
+        }}
 
       {:ok, _response} ->
         {:error, "Pokemon not found"}
@@ -40,9 +40,9 @@ defmodule Pokelixir do
   @doc """
   Fetches all Pokemons limited by the limit parameter
   """
-  @spec all(integer()) :: [Pokemon.t()]
-  def all(limit \\ 20) do
-    build = Finch.build(:get, "https://pokeapi.co/api/v2/pokemon?limit=#{limit}")
+  @spec all(integer(), integer()) :: [Pokemon.t()]
+  def all(limit \\ 20, offset \\ 0) do
+    build = Finch.build(:get, "https://pokeapi.co/api/v2/pokemon?limit=#{limit}&offset=#{offset}")
 
     case Finch.request(build, MyFinch) do
       {:ok, %Finch.Response{status: 200, body: body}} ->
@@ -51,9 +51,43 @@ defmodule Pokelixir do
         decoded_body["results"]
         |> Enum.map_reduce([], fn pokemon, acc ->
           pokemon_id = String.split(pokemon["url"], "/", trim: true) |> List.last()
-          {pokemon_id, acc ++ [get(pokemon_id)]}
+          {:ok, pokemon} = get(pokemon_id)
+          {pokemon_id, acc ++ [pokemon]}
         end)
         |> elem(1)
+
+      {:error, _reason} ->
+        {:error, "An error has occurred"}
+    end
+  end
+
+  def async_all() do
+    case count() do
+      {:error, _reason} ->
+        {:error, "An error has occurred"}
+
+      count ->
+        limit = 100
+        offset = 0
+
+        total_pages = div(count, limit)
+
+        Task.async_stream(0..total_pages, fn page ->
+          all(limit, offset + (page * limit))
+        end)
+        |> IO.inspect(label: "All done!")
+        |> Enum.map_reduce([], fn {:ok, pokemons}, acc -> {pokemons, acc ++ pokemons} end)
+      |> elem(1)
+    end
+  end
+
+  defp count() do
+    build = Finch.build(:get, "https://pokeapi.co/api/v2/pokemon")
+
+    case Finch.request(build, MyFinch) do
+      {:ok, %Finch.Response{status: 200, body: body}} ->
+        decoded_body = Jason.decode!(body)
+        decoded_body["count"]
 
       {:error, _reason} ->
         {:error, "An error has occurred"}

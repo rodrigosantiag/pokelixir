@@ -1,0 +1,74 @@
+{
+	"info": {
+		"_postman_id": "dba35775-ee08-477d-993d-f04077125807",
+		"name": "Pokemon API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7031663"
+	},
+	"item": [
+		{
+			"name": "Get Pokemons async",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4000/async-all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"async-all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Pokemons sync",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4000/all?limit=50",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"all"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "50"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Pokemon",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4000/pokemon/pikachu",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"pokemon",
+						"pikachu"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
