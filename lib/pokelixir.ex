@@ -6,7 +6,6 @@ defmodule Pokelixir do
   @doc """
   Fetches a Pokemon by its name
   """
-
   @spec get(String.t() | integer()) :: {:ok, Pokemon.t()} | {:error, String.t()}
   def get(name_or_id) do
     build = Finch.build(:get, "https://pokeapi.co/api/v2/pokemon/#{name_or_id}")
@@ -61,6 +60,9 @@ defmodule Pokelixir do
     end
   end
 
+  @doc """
+  Fetches all Pokemons asynchronously
+  """
   @spec async_all() :: [Pokemon.t()]
   def async_all() do
     case count() do
